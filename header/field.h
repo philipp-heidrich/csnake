@@ -1,1 +1,2 @@
+void printHr();
 void fieldDisplay();

@@ -1,12 +1,8 @@
-#ifdef __cplusplus__
-	#include <cstdlib>
-#else
-	#include <stdlib.h>
-#endif
+#include <stdio.h>
+#include <conio.h>
+#include <windows.h>
 
-int consoleClear()
+void clearConsole()
 {
-	system("clear");
-
-	return 0;
+	system("cls");
 }

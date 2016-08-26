@@ -1,1 +1,1 @@
-int consoleClear();
+void clearConsole();
