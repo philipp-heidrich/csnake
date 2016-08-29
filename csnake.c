@@ -7,12 +7,9 @@
 
 Compile with gcc:
 Windows:
-gcc -std=c99 csnake.c header/field.c header/console.c header/menu.c header/snake.c header/fruits.c -o build/build.exe && .\build\build.exe
+gcc -std=c99 csnake.c header/field.c header/console.c header/menu.c header/snake.c header/fruits.c header/game.c -o build/build.exe && .\build\build.exe
 *********************************************************/
-
 #include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
 #include <conio.h>
 #include <windows.h>
 
@@ -27,18 +24,17 @@ gcc -std=c99 csnake.c header/field.c header/console.c header/menu.c header/snake
 #define LEFT 75
 #define RIGHT 77
 
-int boradLengthX = 20;
-int boradLengthY = 20;
-int board[20][20] = { 0 };
+int boradLengthX = 50;
+int boradLengthY = 10;
+int board[50][10] = { 0 };
 
-int sleepTimer = 200;
+int sleepTimer = 30;
 int pressedChar;
-
 
 int main()
 {
 	// Clear console
-	clearConsole();
+	consoleClear();
 
 	// Show menu
 	// menuShow();
@@ -51,13 +47,13 @@ int main()
 			Sleep(sleepTimer);
 
 			// Set new fruit icon
-			fruitsSetItem(&boradLengthX, &boradLengthY, &board);
+			fruitsSetItem(&boradLengthY, &boradLengthX, &board);
 
 			// Set snake
-			snakeSetItem(&boradLengthX, &boradLengthY, &board);
+			snakeSetItem(&boradLengthY, &boradLengthX, &board);
 
 			// Print display
-			fieldDisplay(&boradLengthX, &boradLengthY, &board);
+			fieldInit(&boradLengthY, &boradLengthX, &board);
 		}
 
 		pressedChar = getch();
@@ -65,8 +61,7 @@ int main()
 		// ESC
 		if(pressedChar == 27)
 		{
-			system("cls");
-			exit(0);
+			consoleQuit();
 		}
 
 		// Up

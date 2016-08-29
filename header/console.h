@@ -1,1 +1,2 @@
-void clearConsole();
+void consoleClear();
+void consoleQuit();

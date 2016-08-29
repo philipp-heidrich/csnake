@@ -1,20 +1,67 @@
+/**
+ *	Includes
+ **/
 #include <stdio.h>
 #include <string.h>
 
 #include "console.h"
+#include "game.h"
 
-void printHr();
 
-const char 	placeSign 	= ' ';
-const char 	borderSign 	= '#';
-const char 	fruitSign 	= 'x';
-const char 	snakeSign	= 'O';
+/**
+ *	Definition
+ **/
+#include "field.h"
 
-char strpoints[100] = "Points";
-int intPoints	= 0;
 
-int fieldLengthY = 0;
-int fieldLengthX = 0;
+/**
+ *	Variables
+ **/
+#define	placeSign 	' '
+#define	borderSign  '#'
+#define	fruitSign 	'x'
+#define	snakeSign	'O'
+
+char strpoints[] 	= "Points";
+int intPoints		= 0;
+
+char strLength[] 	= "Length";
+int intLength		= 0;
+
+char strLives[]		= "Lives";
+int intProcess		= 0;
+
+int fieldLengthY 	= 0;
+int fieldLengthX 	= 0;
+
+
+/**
+ *	Functions
+ **/
+int getIntLength(int intNumber)
+{
+	int intLength = (intNumber < 10) ? 1 :
+						(intNumber < 100) ? 2 :
+							(intNumber < 1000) ? 3 :
+								(intNumber < 10000) ? 4 :
+									(intNumber < 100000) ? 5 : 6;
+
+	return intLength;
+}
+
+void fieldInit(int *boardLengthY, int *boardLengthX, int *board[*boardLengthY][*boardLengthX])
+{
+	if(
+		!fieldLengthY ||
+		!fieldLengthX
+	)
+	{
+		fieldLengthY = *boardLengthY;
+		fieldLengthX = *boardLengthX;
+	}
+
+	fieldDisplay(board);
+}
 
 void printHr()
 {
@@ -28,19 +75,10 @@ void printHr()
 	printf("\n");
 }
 
-void fieldDisplay(int *boardLengthX, int *boardLengthY, int *board[fieldLengthX][fieldLengthY])
+void fieldDisplay(int *board[fieldLengthY][fieldLengthX])
 {
-	if(
-		!fieldLengthY ||
-		!fieldLengthX
-	)
-	{
-		fieldLengthY = *boardLengthY;
-		fieldLengthX = *boardLengthX;
-	}
-
 	// Clear console
-	clearConsole();
+	consoleClear();
 
 	printf("\n\n\n");
 
@@ -87,22 +125,59 @@ void fieldDisplay(int *boardLengthX, int *boardLengthY, int *board[fieldLengthX]
 
 		for(int columnCnt = 0; columnCnt < fieldLengthX + 2; columnCnt++)
 		{
+			// ROW 1
 			// String Points
 			if(rowCnt == 0 && columnCnt == 2)
 			{
 				printf("%s", strpoints);
 			}
 
+			// String Length
+			if(rowCnt == 0 && columnCnt == 6)
+			{
+				printf("%s", strLength);
+			}
+
+			// String Process
+			if(rowCnt == 0 && columnCnt == 11)
+			{
+				printf("%s", strLives);
+			}
+
+
+			// ROW 2
 			// Int Points
 			else if(rowCnt == 1 && columnCnt == 2)
 			{
-				printf("%i", intPoints);
+				printf("%i", game_getPoints());
+			}
+
+			// Int Length
+			else if(rowCnt == 1 && columnCnt == 13 - getIntLength(game_getPoints()))
+			{
+				printf("%i", game_getLength());
+			}
+
+			// Int Process
+			else if(rowCnt == 1 && columnCnt == 25 -
+				getIntLength(game_getPoints()) -
+				getIntLength(game_getLength())
+			)
+			{
+				printf("%i", game_getLives());
 			}
 
 			// Border Signs
 			else if(
-				rowCnt == 0 && (columnCnt == 0 || columnCnt == fieldLengthX - strlen(strpoints) + 2) ||
-				rowCnt == 1 && (columnCnt == 0 || columnCnt == fieldLengthX - ((intPoints < 10) ? 1 : 2) + 2)
+				rowCnt == 0 && (columnCnt == 0 || columnCnt == fieldLengthX - strlen(strpoints) - strlen(strLength) - strlen(strLives) + 2)
+				||
+				rowCnt == 1 && (columnCnt == 0 || columnCnt ==
+					fieldLengthX -
+					getIntLength(game_getPoints()) -
+					getIntLength(game_getLength()) -
+					getIntLength(game_getLives())
+					+ 4
+				)
 			)
 			{
 				printf("%c", borderSign);
@@ -111,7 +186,7 @@ void fieldDisplay(int *boardLengthX, int *boardLengthY, int *board[fieldLengthX]
 			// Whitespaces
 			else
 			{
-				printf("%c", placeSign);
+				printf("%c", ' ');
 			}
 		}
 
