@@ -1,6 +1,11 @@
+int game_getPlayStatus();
 int game_getPoints();
 int game_getLength();
 int game_getLives();
+void game_setPlayStatus(int newPlayStatus);
 void game_addPoints();
 void game_addOneLength();
 void game_setNewLives(int newProcess);
+void game_printPause();
+void game_start();
+void game_reset();

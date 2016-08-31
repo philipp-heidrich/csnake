@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <windows.h>
 
+#include "console.h"
 #include "fruits.h"
 #include "game.h"
 
@@ -27,7 +28,7 @@ struct coordinate {
 };
 
 typedef struct coordinate coordinate;
-int snakeArrayCnt = 0;
+int snake_arrayCnt = 0;
 coordinate snakeArray[10000];
 coordinate lastItem;
 
@@ -39,9 +40,9 @@ void snakeSetItem(int *boardLengthY, int *boardLengthX, int *board[*boardLengthY
 {
 	if(!snake_inUse)
 	{
-		snakeArray[snakeArrayCnt].y = *boardLengthY / 2;
-		snakeArray[snakeArrayCnt].x = *boardLengthX / 2;
-		snakeArray[snakeArrayCnt].direction = snakeDirection;
+		snakeArray[snake_arrayCnt].y = *boardLengthY / 2;
+		snakeArray[snake_arrayCnt].x = *boardLengthX / 2;
+		snakeArray[snake_arrayCnt].direction = snakeDirection;
 
 		snake_inUse = 1;
 	}
@@ -54,11 +55,21 @@ void snakeSetItem(int *boardLengthY, int *boardLengthX, int *board[*boardLengthY
 		snakeNewPosition(boardLengthY, boardLengthX);
 
 		// Check have the snake contact with a fruit
-		snakeCheckContact(boardLengthY, boardLengthX, board);
+		snake_contactFruit(boardLengthY, boardLengthX, board);
+	}
+
+	// Check have the snake contact with oneself
+	if(snake_contactSelf())
+	{
+		// Go to lost site
+		console_goTo(3);
 	}
 
 	// Print snake
-	snake_printSnake(boardLengthY, boardLengthX, board);
+	else
+	{
+		snake_printSnake(boardLengthY, boardLengthX, board);
+	}
 }
 
 
@@ -88,10 +99,10 @@ void snakeDeletePosition(int *boardLengthY, int *boardLengthX, int *board[*board
 
 void snakeNewPosition(int *boardLengthY, int *boardLengthX)
 {
-	for(int i = snakeArrayCnt; i > -1; i--)
+	for(int i = snake_arrayCnt; i > -1; i--)
 	{
 		// Save last element
-		if(snakeArrayCnt == i)
+		if(snake_arrayCnt == i)
 		{
 			lastItem.y = snakeArray[i].y;
 			lastItem.x = snakeArray[i].x;
@@ -147,7 +158,7 @@ void snakeNewPosition(int *boardLengthY, int *boardLengthX)
 /**
  *	Check if have the snake contact with a fruit
  **/
-void snakeCheckContact(int *boardLengthY, int *boardLengthX, int *board[*boardLengthY][*boardLengthX])
+void snake_contactFruit(int *boardLengthY, int *boardLengthX, int *board[*boardLengthY][*boardLengthX])
 {
 	if(board[snakeArray[0].y][snakeArray[0].x] == (int*) 1)
 	{
@@ -161,11 +172,34 @@ void snakeCheckContact(int *boardLengthY, int *boardLengthX, int *board[*boardLe
 		fruits_touchedFruit(snakeArray[0].y, snakeArray[0].x);
 
 		// Dublicate last element
-		snakeArrayCnt++;
-		snakeArray[snakeArrayCnt].y = lastItem.y;
-		snakeArray[snakeArrayCnt].x = lastItem.x;
-		snakeArray[snakeArrayCnt].direction = lastItem.direction;
+		snake_arrayCnt++;
+		snakeArray[snake_arrayCnt].y = lastItem.y;
+		snakeArray[snake_arrayCnt].x = lastItem.x;
+		snakeArray[snake_arrayCnt].direction = lastItem.direction;
 	}
+}
+
+
+/**
+ *	Check have the snake contact with oneself
+ **/
+int snake_contactSelf()
+{
+	int returnContact = 0;
+
+	for(int e = 1; e <= snake_arrayCnt; e++)
+	{
+		if(
+			snakeArray[0].y == snakeArray[e].y &&
+			snakeArray[0].x == snakeArray[e].x
+		)
+		{
+			returnContact = 1;
+			break;
+		}
+	}
+
+	return returnContact;
 }
 
 
@@ -174,8 +208,19 @@ void snakeCheckContact(int *boardLengthY, int *boardLengthX, int *board[*boardLe
  **/
 void snake_printSnake(int *boardLengthY, int *boardLengthX, int *board[*boardLengthY][*boardLengthX])
 {
-	for(int i = 0; i <= snakeArrayCnt; i++)
+	for(int i = 0; i <= snake_arrayCnt; i++)
 	{
 		board[snakeArray[i].y][snakeArray[i].x] = (int*) 2;
 	}
+}
+
+
+/**
+ *	Reset snake
+ **/
+void snake_reset()
+{
+	snake_inUse = 0;
+	snake_arrayCnt = 0;
+	snakeDirection = 2;
 }

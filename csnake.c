@@ -2,93 +2,64 @@
 
  						cSNAKE
  			--------------------------------
- 					Version: 0.0.1
+ 					Version: 1.0.0
  			--------------------------------
 
 Compile with gcc:
 Windows:
-gcc -std=c99 csnake.c header/field.c header/console.c header/menu.c header/snake.c header/fruits.c header/game.c -o build/build.exe && .\build\build.exe
+gcc -std=c99 cSnake.c \
+	header/field.c \
+	header/console.c \
+	header/menu.c \
+	header/snake.c \
+	header/fruits.c \
+	header/game.c \
+	header/pause.c \
+	header/lost.c \
+	header/file.c \
+	-o build/cSnake.exe
 *********************************************************/
+
+/**
+ *	Includes
+ **/
 #include <stdio.h>
-#include <conio.h>
-#include <windows.h>
 
-#include "header/console.h"
-#include "header/snake.h"
-#include "header/field.h"
-#include "header/fruits.h"
 #include "header/menu.h"
-
-#define UP 72
-#define DOWN 80
-#define LEFT 75
-#define RIGHT 77
-
-int boradLengthX = 50;
-int boradLengthY = 10;
-int board[50][10] = { 0 };
-
-int sleepTimer = 30;
-int pressedChar;
+#include "header/pause.h"
+#include "header/game.h"
+#include "header/lost.h"
 
 int main()
 {
-	// Clear console
-	consoleClear();
-
-	// Show menu
-	// menuShow();
+	menu_start();
 
 	while(1)
 	{
-		while(!kbhit())
+		// Show menu
+		if(menu_getShowStatus())
 		{
-			// Delay
-			Sleep(sleepTimer);
-
-			// Set new fruit icon
-			fruitsSetItem(&boradLengthY, &boradLengthX, &board);
-
-			// Set snake
-			snakeSetItem(&boradLengthY, &boradLengthX, &board);
-
-			// Print display
-			fieldInit(&boradLengthY, &boradLengthX, &board);
+			menu_start();
 		}
 
-		pressedChar = getch();
-
-		// ESC
-		if(pressedChar == 27)
+		// Game
+		else if(game_getPlayStatus())
 		{
-			consoleQuit();
+			game_start();
 		}
 
-		// Up
-		else if(pressedChar == UP)
+		// Pause
+		else if(pause_getStatus())
 		{
-			snakeEditDirection(0);
+			pause_start();
 		}
 
-		// Right
-		else if(pressedChar == RIGHT)
+		// Game over
+		else if(lost_getStatus())
 		{
-			snakeEditDirection(1);
-		}
-
-		// Down
-		else if(pressedChar == DOWN)
-		{
-			snakeEditDirection(2);
-		}
-
-		// Left
-		else if(pressedChar == LEFT)
-		{
-			snakeEditDirection(3);
+			lost_start();
 		}
 	}
-
 
 	return 0;
 }

@@ -28,9 +28,6 @@ int intPoints		= 0;
 char strLength[] 	= "Length";
 int intLength		= 0;
 
-char strLives[]		= "Lives";
-int intProcess		= 0;
-
 int fieldLengthY 	= 0;
 int fieldLengthX 	= 0;
 
@@ -126,22 +123,16 @@ void fieldDisplay(int *board[fieldLengthY][fieldLengthX])
 		for(int columnCnt = 0; columnCnt < fieldLengthX + 2; columnCnt++)
 		{
 			// ROW 1
-			// String Points
+			// String points
 			if(rowCnt == 0 && columnCnt == 2)
 			{
 				printf("%s", strpoints);
 			}
 
-			// String Length
+			// String length
 			if(rowCnt == 0 && columnCnt == 6)
 			{
 				printf("%s", strLength);
-			}
-
-			// String Process
-			if(rowCnt == 0 && columnCnt == 11)
-			{
-				printf("%s", strLives);
 			}
 
 
@@ -158,25 +149,15 @@ void fieldDisplay(int *board[fieldLengthY][fieldLengthX])
 				printf("%i", game_getLength());
 			}
 
-			// Int Process
-			else if(rowCnt == 1 && columnCnt == 25 -
-				getIntLength(game_getPoints()) -
-				getIntLength(game_getLength())
-			)
-			{
-				printf("%i", game_getLives());
-			}
-
 			// Border Signs
 			else if(
-				rowCnt == 0 && (columnCnt == 0 || columnCnt == fieldLengthX - strlen(strpoints) - strlen(strLength) - strlen(strLives) + 2)
+				rowCnt == 0 && (columnCnt == 0 || columnCnt == fieldLengthX - strlen(strpoints) - strlen(strLength) + 2)
 				||
 				rowCnt == 1 && (columnCnt == 0 || columnCnt ==
 					fieldLengthX -
 					getIntLength(game_getPoints()) -
-					getIntLength(game_getLength()) -
-					getIntLength(game_getLives())
-					+ 4
+					getIntLength(game_getLength())
+					+ 3
 				)
 			)
 			{
@@ -195,7 +176,4 @@ void fieldDisplay(int *board[fieldLengthY][fieldLengthX])
 
 	// HR
 	printHr();
-
-	// Clear flush
-	fflush(stdout);
 }

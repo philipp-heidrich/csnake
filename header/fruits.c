@@ -33,7 +33,7 @@ int randr(int max)
 	return rand() % (max);
 }
 
-void fruitsDeleteItem(int *boardLengthY, int *boardLengthX, int * board[*boardLengthY][*boardLengthX])
+void fruitsDeleteItem(int *boardLengthY, int *boardLengthX, int *board[*boardLengthY][*boardLengthX])
 {
 	// Set fruit to 0
 	fruitIs = 0;
@@ -54,11 +54,23 @@ void fruitsDeleteItem(int *boardLengthY, int *boardLengthX, int * board[*boardLe
 	}
 }
 
-void fruitsSetItem(int *boardLengthY, int *boardLengthX, int * board[*boardLengthX][*boardLengthX])
+void fruitsSetItem(int *boardLengthY, int *boardLengthX, int *board[*boardLengthX][*boardLengthX])
 {
 	// Set timestamp
 	if(lastFruit == -1)
 	{
+		lastFruit = (int)time(NULL);
+	}
+
+	// Check if fruit to old
+	if(
+		fruitIs == 1 &&
+		(int)time(NULL) - lastFruit > 5
+	)
+	{
+		fruits_reset();
+
+		fruitIs = 0;
 		lastFruit = (int)time(NULL);
 	}
 
@@ -92,5 +104,17 @@ void fruits_touchedFruit(int fruitPosY, int fruitPosX)
 	lastFruit = (int)time(NULL);
 
 	// Save fruit var to not in use
+	fruitIs = 0;
+}
+
+
+/**
+ *	Reset fruits
+ **/
+void fruits_reset()
+{
+	fruitPosY = -1;
+	fruitPosX = -1;
+	lastFruit = -1;
 	fruitIs = 0;
 }
